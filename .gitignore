@@ -3,3 +3,8 @@
 ################################################################################
 
 /packages
+/LPRUnitTest/bin/Debug
+/LPRUnitTest/obj/Debug
+/LicencePlateRecognition/bin/Debug
+/LicencePlateRecognition/obj/Debug
+/.vs

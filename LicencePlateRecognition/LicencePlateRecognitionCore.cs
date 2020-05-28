@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Text.RegularExpressions;
 using Emgu.CV;
+using Emgu.CV.CvEnum;
 using Emgu.CV.Structure;
 using Emgu.CV.Util;
 using Patagames.Ocr;
@@ -15,8 +16,16 @@ namespace LicencePlateRecognition
 
         public string DetectLicencePlate(Bitmap image)
         {
-            Image<Hsv, Byte> originalImage = new Image<Hsv, byte>(image);
+            Image<Bgr, Byte> originalImage = new Image<Bgr, byte>(image);
+            //originalImage = originalImage.Resize(500, 500, Emgu.CV.CvEnum.Inter.Linear, true);
+
+            //Convert the image to grayscale and filter out the noise
             Image<Gray, Byte> grayImage = originalImage.Convert<Gray, Byte>();
+
+            //use image pyr to remove noise
+            UMat pyrDown = new UMat();
+            CvInvoke.PyrDown(grayImage, pyrDown);
+            CvInvoke.PyrUp(pyrDown, grayImage);
 
             // Noise removal with iterative bilateral filter(removes noise while preserving edges)
             Mat filteredImage = new Mat();
@@ -24,7 +33,9 @@ namespace LicencePlateRecognition
 
             ///Find Edges of the grayscale image
             Mat edges = new Mat();
-            CvInvoke.Canny(filteredImage, edges, 170, 200);
+            CvInvoke.Canny(filteredImage, edges, 120, 200);
+
+            filteredImage.Save("medziproj.jpg");
 
             // Find contours
             Mat hierarchy = new Mat();
@@ -35,6 +46,7 @@ namespace LicencePlateRecognition
             //Create copy of original image to draw all contours
             var copyOriginalImage = originalImage.Clone();
             CvInvoke.DrawContours(copyOriginalImage, contours, -1, new MCvScalar(0, 255, 0, 255), 3);
+            
 
             var newContoursArray = new VectorOfVectorOfPoint();
 
@@ -68,10 +80,28 @@ namespace LicencePlateRecognition
                 ////mame 4hranu
                 if(approx.Size == 4)
                 {
-                    numberPlateVectorArray.Push(approx);
-                    //x, y, w, h = cv2.boundingRect(c)
-                    resultRectangle = CvInvoke.BoundingRectangle(c);
-                    break;
+                    //determine if all the angles in the contour are within [80, 100] degree
+                    bool isRectangle = true;
+                    LineSegment2D[] edgesArr = PointCollection.PolyLine(approx.ToArray(), true);
+
+                    for (int j = 0; j < edgesArr.Length; j++)
+                    {
+                        double angle = Math.Abs(
+                           edgesArr[(j + 1) % edgesArr.Length].GetExteriorAngleDegree(edgesArr[j]));
+                        if (angle < 80 || angle > 100)
+                        {
+                            isRectangle = false;
+                            break;
+                        }
+                    }
+
+                    if (isRectangle)
+                    {
+                        numberPlateVectorArray.Push(approx);
+                        resultRectangle = CvInvoke.BoundingRectangle(c);
+                        break;
+                    }
+
                 }
 
             }
@@ -85,7 +115,7 @@ namespace LicencePlateRecognition
             originalImage = originalImage.Copy();
             CvInvoke.cvResetImageROI(originalImage);
 
-
+            //originalImage = originalImage.Resize(200, 200, Emgu.CV.CvEnum.Inter.Linear, true);
             originalImage.Save(RESULT_PLATE);
             return this.RecognizeText(RESULT_PLATE);
         }
@@ -94,9 +124,13 @@ namespace LicencePlateRecognition
         {
             using (var api = OcrApi.Create())
             {
-                api.Init(Languages.English, "./");
+                api.Init(Languages.English, "./", OcrEngineMode.OEM_TESSERACT_CUBE_COMBINED);
                 string plainText = api.GetTextFromImage(path);
                 plainText = Regex.Replace(plainText, "[^a-zA-Z0-9]", "").ToUpper();
+                if(plainText.Length >= 8)
+                {
+                    plainText = plainText.Remove(2,1).ToString();
+                }
                 return plainText;
             }
         }
