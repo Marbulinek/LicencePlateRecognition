@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30114.105
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LicencePlateRecognition", "LicencePlateRecognition\LicencePlateRecognition.csproj", "{364E2B46-FBCC-4109-B7F0-4DE01D0E7A3B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LPRUnitTest", "LPRUnitTest\LPRUnitTest.csproj", "{26558DAF-A96A-49C1-96E2-7B4F29490830}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{364E2B46-FBCC-4109-B7F0-4DE01D0E7A3B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{364E2B46-FBCC-4109-B7F0-4DE01D0E7A3B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{364E2B46-FBCC-4109-B7F0-4DE01D0E7A3B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{364E2B46-FBCC-4109-B7F0-4DE01D0E7A3B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{26558DAF-A96A-49C1-96E2-7B4F29490830}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{26558DAF-A96A-49C1-96E2-7B4F29490830}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{26558DAF-A96A-49C1-96E2-7B4F29490830}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{26558DAF-A96A-49C1-96E2-7B4F29490830}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {7331F22A-06B3-473E-9763-D5C3A7FBEE87}
+	EndGlobalSection
+EndGlobal
